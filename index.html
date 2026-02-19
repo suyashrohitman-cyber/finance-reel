@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,17 +7,21 @@
 <title>Salary Slip — Money Project India</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#FFD700;--gold2:#FFA500;--red:#FF3B3B;--green:#00FF87;--bg:#050505;}
+/* NO CSS VARIABLES — all colors are hardcoded hex so copy-paste NEVER breaks */
+/* GOLD=#FFD700  RED=#FF3B3B  GREEN=#00FF87  BG=#050505 */
+
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
-  background:#0a0a0a;
-  display:flex;justify-content:center;align-items:center;
-  min-height:100vh;overflow:hidden;
-  font-family:'Space Grotesk',sans-serif;
-}/* TRUE 9:16 */
+background:#0a0a0a;
+display:flex;justify-content:center;align-items:center;
+min-height:100vh;overflow:hidden;
+font-family:‘Space Grotesk’,sans-serif;
+}
+
+/* ── 9:16 STAGE ── */
 #stage{
 width:390px;height:693px;
-background:var(--bg);
+background:#050505;
 position:relative;overflow:hidden;
 cursor:pointer;flex-shrink:0;
 border-radius:28px;
@@ -24,13 +29,15 @@ box-shadow:0 40px 120px rgba(0,0,0,0.9);
 }
 @media(max-height:730px){#stage{transform:scale(0.87);transform-origin:center;}}
 @media(max-height:630px){#stage{transform:scale(0.75);transform-origin:center;}}
-/* Film grain */
+
+/* Film grain overlay */
 #stage::before{
-content:'';position:absolute;inset:0;
-background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+content:’’;position:absolute;inset:0;
+background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
 opacity:0.028;pointer-events:none;z-index:500;mix-blend-mode:overlay;
 }
-/* Safe content zone: top 8% (~55px), bottom 15% (~104px) */
+
+/* Safe zone: top 55px, bottom 104px */
 .safe{
 position:absolute;
 top:55px;left:0;right:0;bottom:104px;
@@ -38,22 +45,29 @@ display:flex;flex-direction:column;
 align-items:center;justify-content:center;
 padding:0 22px;overflow:hidden;
 }
+
 #particleCanvas{position:absolute;inset:0;z-index:1;pointer-events:none;}
 .scene{position:absolute;top:0;left:0;right:0;bottom:0;display:none;z-index:10;}
 .scene.active{display:block;}
-/* Watermark only — no bars, no dots, no labels */
+
+/* Watermark */
 .wm{
 position:absolute;bottom:108px;right:20px;
-font-family:'DM Mono',monospace;font-size:7px;
+font-family:‘DM Mono’,monospace;font-size:7px;
 letter-spacing:2.5px;color:rgba(255,215,0,0.16);
 z-index:400;text-transform:uppercase;pointer-events:none;
 }
+
+/* Flash */
 #flash{
 position:absolute;inset:0;background:#fff;opacity:0;
 pointer-events:none;z-index:600;transition:opacity 0.1s ease;
 }
 #flash.go{opacity:0.1;}
-/* ══ SCENE 1 — SALARY SLIP ══ */
+
+/* ══════════════════════════════
+SCENE 1 — SALARY SLIP
+══════════════════════════════ */
 #s1 .ambient{
 position:absolute;inset:0;
 background:
@@ -69,7 +83,8 @@ background-size:42px 42px;
 opacity:0;transition:opacity 1.2s ease;
 }
 #s1 .grid.show{opacity:1;}
-.slip-wrap{width:100%;max-width:325px;perspective:900px;}
+
+.slip-wrap{width:100%;max-width:325px;}
 .slip-card{
 background:linear-gradient(140deg,rgba(26,23,14,0.99) 0%,rgba(12,11,6,1) 55%,rgba(20,18,10,0.99) 100%);
 border:1px solid rgba(255,215,0,0.11);border-radius:20px;
@@ -79,63 +94,663 @@ transition:all 0.85s cubic-bezier(0.34,1.06,0.64,1);
 box-shadow:0 32px 90px rgba(0,0,0,0.97),0 0 0 1px rgba(255,255,255,0.035),inset 0 1px 0 rgba(255,215,0,0.07);
 }
 .slip-card.show{opacity:1;transform:perspective(700px) rotateX(0deg) translateY(0) scale(1);}
+
+/* Shimmer sweep */
 .slip-card::before{
-content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;
+content:’’;position:absolute;top:0;left:-120%;width:55%;height:100%;
 background:linear-gradient(90deg,transparent,rgba(255,215,0,0.05),transparent);
 transition:left 1.4s ease 0.2s;
 }
 .slip-card.show::before{left:220%;}
+
+/* Corner glow */
 .slip-card::after{
-content:'';position:absolute;top:0;right:0;width:70px;height:70px;
+content:’’;position:absolute;top:0;right:0;width:70px;height:70px;
 background:linear-gradient(225deg,rgba(255,215,0,0.07),transparent 65%);
 border-radius:0 20px 0 0;
 }
+
 .slip-top{
 display:flex;justify-content:space-between;align-items:flex-start;
 border-bottom:1px solid rgba(255,215,0,0.07);padding-bottom:13px;margin-bottom:14px;
 }
-.slip-co{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2.5px;color:#fff;}
-.slip-period{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,215,0,0.38);letter-spacing:1.5px;margin-top:3px;}
+.slip-co{font-family:‘Bebas Neue’,sans-serif;font-size:18px;letter-spacing:2.5px;color:#fff;}
+.slip-period{font-family:‘DM Mono’,monospace;font-size:8px;color:rgba(255,215,0,0.38);letter-spacing:1.5px;margin-top:3px;}
+
 .slip-stamp{
-width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(255,215,0,0.18);
+width:46px;height:46px;border-radius:50%;
+border:1.5px solid rgba(255,215,0,0.18);
 display:flex;align-items:center;justify-content:center;flex-direction:column;
-font-family:'DM Mono',monospace;font-size:5.5px;color:rgba(255,215,0,0.32);
+font-family:‘DM Mono’,monospace;font-size:5.5px;color:rgba(255,215,0,0.32);
 letter-spacing:0.8px;text-align:center;line-height:1.6;
 transform:rotate(12deg);opacity:0;transition:opacity 0.5s ease 0.7s;
 }
 .slip-stamp.show{opacity:1;}
+
 .slip-field{
 display:flex;justify-content:space-between;align-items:center;
 padding:6.5px 0;border-bottom:1px solid rgba(255,255,255,0.03);
 opacity:0;transform:translateX(-22px);transition:all 0.48s cubic-bezier(0.34,1.1,0.64,1);
 }
 .slip-field.show{opacity:1;transform:translateX(0);}
-.sf-key{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.5px;}
+.sf-key{font-family:‘DM Mono’,monospace;font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.5px;}
 .sf-val{font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);}
-.ctc-block{margin-top:15px;text-align:center;opacity:0;transform:scale(0.72);transition:all 0.7s cubic-bezier(0.34,1.45,0.64,1);}
+
+.ctc-block{
+margin-top:15px;text-align:center;
+opacity:0;transform:scale(0.72);
+transition:all 0.7s cubic-bezier(0.34,1.45,0.64,1);
+}
 .ctc-block.show{opacity:1;transform:scale(1);}
-.ctc-tag{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:4px;color:rgba(255,215,0,0.42);text-transform:uppercase;}
-.ctc-num{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:1px;color:var(--gold);line-height:1;text-shadow:0 0 35px rgba(255,215,0,0.28),0 0 70px rgba(255,215,0,0.1);}
-.ctc-sub{font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(255,215,0,0.28);letter-spacing:1px;}
-/* ══ SCENE 2 — IN-HAND ══ */
-#s2 .ambient{position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 50% 58%,rgba(0,255,135,0.07) 0%,transparent 68%);}
+.ctc-tag{font-family:‘DM Mono’,monospace;font-size:7.5px;letter-spacing:4px;color:rgba(255,215,0,0.42);text-transform:uppercase;}
+
+/* GOLD color hardcoded — no CSS variable */
+.ctc-num{
+font-family:‘Bebas Neue’,sans-serif;font-size:46px;letter-spacing:1px;
+color:#FFD700;
+line-height:1;
+text-shadow:0 0 35px rgba(255,215,0,0.28),0 0 70px rgba(255,215,0,0.1);
+}
+.ctc-sub{font-family:‘DM Mono’,monospace;font-size:8.5px;color:rgba(255,215,0,0.28);letter-spacing:1px;}
+
+/* ══════════════════════════════
+SCENE 2 — IN-HAND
+══════════════════════════════ */
+#s2 .ambient{
+position:absolute;inset:0;
+background:radial-gradient(ellipse 70% 55% at 50% 58%,rgba(0,255,135,0.07) 0%,transparent 68%);
+}
 .ih-scene{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;}
 .ih-badge{
 display:inline-flex;align-items:center;gap:7px;
 background:rgba(0,255,135,0.065);border:1px solid rgba(0,255,135,0.18);
 border-radius:50px;padding:6px 16px;
-font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:3px;color:rgba(0,255,135,0.65);
+font-family:‘DM Mono’,monospace;font-size:8.5px;letter-spacing:3px;
+color:rgba(0,255,135,0.65);
 text-transform:uppercase;opacity:0;transform:translateY(-12px);transition:all 0.5s ease;
 }
 .ih-badge.show{opacity:1;transform:translateY(0);}
-.badge-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:bpulse 1.6s ease-in-out infinite;}
-...
-/* Continue the rest of your CSS as-is, just make sure all var(--red/gold/green/bg) are fixed and quotes corrected */
+
+.badge-dot{
+width:5px;height:5px;border-radius:50%;
+background:#00FF87;
+box-shadow:0 0 7px #00FF87;
+animation:bpulse 1.6s ease-in-out infinite;
+}
+@keyframes bpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.45;transform:scale(0.75)}}
+
+/* GREEN hardcoded */
+.ih-amount{
+font-family:‘Bebas Neue’,sans-serif;font-size:82px;letter-spacing:1px;
+color:#00FF87;
+line-height:1;
+text-shadow:0 0 25px rgba(0,255,135,0.32),0 0 65px rgba(0,255,135,0.1);
+opacity:0;clip-path:inset(100% 0 0 0);
+transition:opacity 0.1s,clip-path 0.65s cubic-bezier(0.34,1.2,0.64,1);
+}
+.ih-amount.show{opacity:1;clip-path:inset(0% 0 0 0);}
+.ih-sub{font-family:‘Space Grotesk’,sans-serif;font-size:12px;font-weight:300;color:rgba(255,255,255,0.28);letter-spacing:0.4px;opacity:0;transition:opacity 0.5s ease;}
+.ih-sub.show{opacity:1;}
+
+.hand-stage{position:relative;width:210px;height:130px;margin-top:10px;opacity:0;transition:opacity 0.5s ease;}
+.hand-stage.show{opacity:1;}
+.hand-emoji{
+position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+font-size:66px;
+animation:handWave 2.2s ease-in-out infinite;
+transform-origin:bottom center;
+}
+@keyframes handWave{
+0%,100%{transform:translateX(-50%) rotate(0) translateY(0)}
+28%{transform:translateX(-50%) rotate(-7deg) translateY(-9px)}
+72%{transform:translateX(-50%) rotate(4deg) translateY(-4px)}
+}
+.bill{position:absolute;font-size:22px;opacity:0;}
+.b1{top:5px;left:18px;animation:bFly1 2.3s ease-out infinite 0s;}
+.b2{top:14px;right:16px;animation:bFly2 2.3s ease-out infinite 0.45s;}
+.b3{top:0;left:82px;animation:bFly3 2.3s ease-out infinite 0.9s;}
+.b4{top:18px;right:54px;animation:bFly4 2.3s ease-out infinite 1.35s;}
+@keyframes bFly1{0%{opacity:0;transform:translate(0,0) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translate(-38px,-82px) rotate(-22deg)}}
+@keyframes bFly2{0%{opacity:0;transform:translate(0,0) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translate(32px,-88px) rotate(20deg)}}
+@keyframes bFly3{0%{opacity:0;transform:translate(0,0) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translate(-8px,-95px) rotate(-6deg)}}
+@keyframes bFly4{0%{opacity:0;transform:translate(0,0) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translate(22px,-72px) rotate(26deg)}}
+
+/* ══════════════════════════════
+SCENE 3 — WHERE DID 8K GO
+══════════════════════════════ */
+#s3 .ambient{
+position:absolute;inset:0;
+background:radial-gradient(ellipse 58% 42% at 50% 42%,rgba(255,59,59,0.08) 0%,transparent 65%);
+}
+.glitch-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;}
+
+/* RED hardcoded */
+.big-q{
+font-family:‘Bebas Neue’,sans-serif;font-size:128px;letter-spacing:-2px;
+color:#FF3B3B;
+line-height:1;text-shadow:0 0 45px rgba(255,59,59,0.55);
+opacity:0;transition:opacity 0.35s ease;
+}
+.big-q.show{opacity:1;animation:glitch 3.5s infinite 0.4s;}
+@keyframes glitch{
+0%,88%,100%{text-shadow:0 0 45px rgba(255,59,59,0.55);transform:translate(0);}
+89%{transform:translate(-3px,1px);text-shadow:-2px 0 cyan,2px 0 magenta;}
+90%{transform:translate(3px,-1px);text-shadow:2px 0 cyan,-2px 0 magenta;}
+91%{transform:translate(0);text-shadow:0 0 45px rgba(255,59,59,0.55);}
+95%{transform:translate(-2px,0);text-shadow:-2px 0 rgba(0,255,255,0.55);}
+96%{transform:translate(2px,0);}
+97%{transform:translate(0);}
+}
+.wt-line{
+font-family:‘Space Grotesk’,sans-serif;font-size:27px;font-weight:700;
+color:#fff;text-align:center;line-height:1.25;
+opacity:0;transform:translateY(20px);
+transition:all 0.52s cubic-bezier(0.34,1.1,0.64,1);
+}
+.wt-line.show{opacity:1;transform:translateY(0);}
+/* RED hardcoded on .red class */
+.wt-line.red{color:#FF3B3B;}
+.blink-cur{
+display:inline-block;width:2.5px;height:28px;
+background:#FF3B3B;
+vertical-align:middle;margin-left:3px;
+animation:blink 0.9s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.wt-small{
+font-family:‘DM Mono’,monospace;font-size:11px;color:rgba(255,255,255,0.22);
+letter-spacing:1px;margin-top:10px;text-align:center;
+opacity:0;transition:opacity 0.5s ease;
+}
+.wt-small.show{opacity:1;}
+
+/* ══════════════════════════════
+SCENE 4 — DEDUCTIONS
+══════════════════════════════ */
+#s4 .ambient{
+position:absolute;inset:0;
+background:
+radial-gradient(ellipse 48% 58% at 8% 50%,rgba(255,100,0,0.04) 0%,transparent 55%),
+radial-gradient(ellipse 38% 38% at 92% 18%,rgba(255,59,59,0.03) 0%,transparent 50%);
+}
+.ded-header{
+font-family:‘DM Mono’,monospace;font-size:8px;letter-spacing:3.5px;
+color:rgba(255,215,0,0.48);text-transform:uppercase;
+margin-bottom:11px;align-self:flex-start;
+opacity:0;transition:opacity 0.4s ease;
+}
+.ded-header.show{opacity:1;}
+.ded-item{
+display:flex;align-items:center;gap:10px;
+padding:10px 13px;border-radius:14px;
+width:100%;margin-bottom:7px;
+background:rgba(255,255,255,0.02);
+border:1px solid rgba(255,255,255,0.04);
+border-left:3px solid transparent;
+opacity:0;transform:translateX(-32px);
+transition:all 0.52s cubic-bezier(0.34,1.1,0.64,1);
+position:relative;overflow:hidden;
+}
+.ded-item::after{
+content:’’;position:absolute;inset:0;
+background:linear-gradient(90deg,rgba(255,255,255,0.018),transparent 50%);
+opacity:0;transition:opacity 0.3s ease;
+}
+.ded-item.show{opacity:1;transform:translateX(0);}
+.ded-item.show::after{opacity:1;}
+.ded-icon{width:37px;height:37px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.ded-text{flex:1;}
+.ded-name{font-weight:600;font-size:12.5px;color:#fff;}
+.ded-desc{font-family:‘DM Mono’,monospace;font-size:8px;color:rgba(255,255,255,0.26);margin-top:2px;letter-spacing:0.3px;}
+/* RED hardcoded */
+.ded-amt{font-family:‘Bebas Neue’,sans-serif;font-size:19px;color:#FF3B3B;letter-spacing:0.5px;}
+.ded-total{
+width:100%;background:rgba(255,59,59,0.065);
+border:1px solid rgba(255,59,59,0.22);
+border-radius:13px;padding:12px 16px;
+display:flex;justify-content:space-between;align-items:center;
+margin-top:3px;opacity:0;transform:translateY(15px);
+transition:all 0.56s cubic-bezier(0.34,1.2,0.64,1);
+}
+.ded-total.show{opacity:1;transform:translateY(0);}
+/* RED hardcoded */
+.ded-tlabel{font-family:‘DM Mono’,monospace;font-size:8.5px;letter-spacing:3px;color:#FF3B3B;}
+.ded-tamt{
+font-family:‘Bebas Neue’,sans-serif;font-size:30px;
+color:#FF3B3B;
+letter-spacing:1px;text-shadow:0 0 22px rgba(255,59,59,0.32);
+}
+
+/* ══════════════════════════════
+SCENE 5 — NOBODY TOLD YOU
+══════════════════════════════ */
+#s5 .ambient{
+position:absolute;inset:0;
+background:radial-gradient(ellipse 62% 52% at 50% 42%,rgba(255,255,255,0.022) 0%,transparent 65%);
+}
+.paper-icon{
+font-size:72px;opacity:0;
+transform:translateY(-26px) rotate(-8deg);
+transition:all 0.68s cubic-bezier(0.34,1.2,0.64,1);
+filter:drop-shadow(0 14px 28px rgba(0,0,0,0.65));
+}
+.paper-icon.show{opacity:1;transform:translateY(0) rotate(0);}
+.paper-icon.float{animation:paperFloat 3.8s ease-in-out infinite;}
+@keyframes paperFloat{
+0%,100%{transform:translateY(0) rotate(0)}
+50%{transform:translateY(-11px) rotate(3deg)}
+}
+.nb-heading{
+font-family:‘Bebas Neue’,sans-serif;font-size:40px;letter-spacing:1px;
+color:#fff;text-align:center;line-height:1.15;
+opacity:0;transform:translateY(18px);
+transition:all 0.56s cubic-bezier(0.34,1.1,0.64,1);
+margin-top:12px;
+}
+.nb-heading.show{opacity:1;transform:translateY(0);}
+/* GOLD hardcoded */
+.nb-heading span{color:#FFD700;}
+.nb-sub{
+font-family:‘Space Grotesk’,sans-serif;font-size:12px;font-weight:300;
+color:rgba(255,255,255,0.28);letter-spacing:0.4px;text-align:center;
+opacity:0;transition:opacity 0.5s ease;margin-top:5px;
+}
+.nb-sub.show{opacity:1;}
+
+.struck-list{
+display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+margin-top:18px;opacity:0;transition:opacity 0.5s ease;
+}
+.struck-list.show{opacity:1;}
+
+.struck-pill{
+position:relative;
+background:rgba(255,255,255,0.038);
+border:1px solid rgba(255,255,255,0.09);
+border-radius:50px;
+padding:7px 17px;
+font-family:‘DM Mono’,monospace;font-size:11px;
+color:rgba(255,255,255,0.38);
+overflow:hidden;
+}
+/* RED strikethrough line — hardcoded, no CSS variable */
+.struck-pill::after{
+content:’’;
+position:absolute;
+top:50%;
+left:0;
+right:0;
+height:1.5px;
+background:#FF3B3B;
+transform:scaleX(0) translateY(-50%);
+transform-origin:left;
+transition:transform 0.42s ease;
+}
+.struck-pill.struck::after{
+transform:scaleX(1) translateY(-50%);
+}
+
+/* ══════════════════════════════
+SCENE 6 — CTA
+══════════════════════════════ */
+#s6 .ambient{
+position:absolute;inset:0;
+background:radial-gradient(ellipse 68% 58% at 50% 52%,rgba(255,215,0,0.065) 0%,transparent 70%);
+}
+@keyframes goldPulse{
+0%,100%{box-shadow:0 0 22px rgba(255,215,0,0.08),inset 0 0 30px rgba(255,215,0,0.025)}
+50%{box-shadow:0 0 45px rgba(255,215,0,0.2),inset 0 0 55px rgba(255,215,0,0.055)}
+}
+.cta-icon{font-size:58px;opacity:0;transform:scale(0.35) rotate(-18deg);transition:all 0.68s cubic-bezier(0.34,1.55,0.64,1);}
+.cta-icon.show{opacity:1;transform:scale(1) rotate(0);}
+.cta-headline{
+font-family:‘Bebas Neue’,sans-serif;font-size:38px;letter-spacing:1.5px;
+color:#fff;text-align:center;line-height:1.15;
+opacity:0;transform:translateY(20px);transition:all 0.56s ease;margin-top:12px;
+}
+.cta-headline.show{opacity:1;transform:translateY(0);}
+/* GOLD hardcoded */
+.cta-headline span{color:#FFD700;}
+
+/* GOLD divider hardcoded */
+.gold-divider{
+width:0;height:1.5px;
+background:linear-gradient(90deg,transparent,#FFD700,transparent);
+margin:15px 0;transition:width 1s ease;
+}
+.gold-divider.on{width:100%;}
+
+.cta-card{
+width:100%;background:rgba(255,215,0,0.038);
+border:1px solid rgba(255,215,0,0.14);
+border-radius:20px;padding:20px;
+opacity:0;transform:translateY(20px) scale(0.96);
+transition:all 0.62s cubic-bezier(0.34,1.1,0.64,1);
+}
+.cta-card.show{opacity:1;transform:translateY(0) scale(1);animation:goldPulse 3.8s ease-in-out infinite;}
+.cta-line{
+font-family:‘Space Grotesk’,sans-serif;font-size:14px;font-weight:400;
+color:rgba(255,255,255,0.72);line-height:1.68;text-align:center;
+opacity:0;transition:opacity 0.45s ease;
+}
+.cta-line.show{opacity:1;}
+/* RED hardcoded on strong */
+.cta-line strong{color:#FF3B3B;font-weight:700;}
+.cta-line.gap{margin-top:9px;}
 </style>
+
 </head>
 <body>
-<!-- your HTML remains identical, no other changes -->
+<div id="stage">
+  <canvas id="particleCanvas"></canvas>
+  <div class="wm">@MoneyProjectIndia</div>
+  <div id="flash"></div>
+
+  <!-- SCENE 1: SALARY SLIP -->
+
+  <div class="scene active" id="s1">
+    <div class="ambient"></div>
+    <div class="grid" id="g1"></div>
+    <div class="safe">
+      <div class="slip-wrap">
+        <div class="slip-card" id="sc">
+          <div class="slip-top">
+            <div>
+              <div class="slip-co">ACME CORP LTD.</div>
+              <div class="slip-period">MARCH 2025 &nbsp;&bull;&nbsp; EMPLOYEE PAYSLIP</div>
+            </div>
+            <div class="slip-stamp" id="sstamp">SALARY<br>SLIP</div>
+          </div>
+          <div class="slip-field" id="sf1">
+            <span class="sf-key">Employee</span>
+            <span class="sf-val">Rahul Kumar</span>
+          </div>
+          <div class="slip-field" id="sf2">
+            <span class="sf-key">Designation</span>
+            <span class="sf-val">Sr. Executive</span>
+          </div>
+          <div class="slip-field" id="sf3">
+            <span class="sf-key">Department</span>
+            <span class="sf-val">Operations</span>
+          </div>
+          <div class="slip-field" id="sf4">
+            <span class="sf-key">Gross CTC</span>
+            <span class="sf-val">&#8377;6,00,000 p.a.</span>
+          </div>
+          <div class="ctc-block" id="ctcb">
+            <div class="ctc-tag">Annual CTC</div>
+            <div class="ctc-num">&#8377;6,00,000</div>
+            <div class="ctc-sub">per year</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 2: IN-HAND -->
+
+  <div class="scene" id="s2">
+    <div class="ambient"></div>
+    <div class="safe">
+      <div class="ih-scene">
+        <div class="ih-badge" id="ihb">
+          <div class="badge-dot"></div>In-Hand Milta Hai
+        </div>
+        <div class="ih-amount" id="iha">&#8377;42,000</div>
+        <div class="ih-sub" id="ihs">per month &mdash; after all deductions</div>
+        <div class="hand-stage" id="hs">
+          <div class="bill b1">&#128181;</div>
+          <div class="bill b2">&#128184;</div>
+          <div class="bill b3">&#128180;</div>
+          <div class="bill b4">&#128176;</div>
+          <div class="hand-emoji">&#129330;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3: WHERE DID 8K GO -->
+
+  <div class="scene" id="s3">
+    <div class="ambient"></div>
+    <div class="safe">
+      <div class="glitch-wrap">
+        <div class="big-q" id="bq">?</div>
+        <div class="wt-line" id="wt1">Baaki</div>
+        <div class="wt-line red" id="wt2">&#8377;8,000<span class="blink-cur"></span></div>
+        <div class="wt-line" id="wt3">kahan gaya?</div>
+        <div class="wt-small" id="wt4">Har mahine. Silently. Bina bataye.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 4: DEDUCTIONS -->
+
+  <div class="scene" id="s4">
+    <div class="ambient"></div>
+    <div class="safe" style="justify-content:flex-start;padding-top:6px;">
+      <div class="ded-header" id="dh">YAHAN GAYA TUMHARA PAISA &#128071;</div>
+      <div class="ded-item" id="di1" style="border-left-color:#FF9500;">
+        <div class="ded-icon" style="background:rgba(255,149,0,0.1);">&#127974;</div>
+        <div class="ded-text">
+          <div class="ded-name">PF Deduction</div>
+          <div class="ded-desc">Tumhara + Company &mdash; dono</div>
+        </div>
+        <div class="ded-amt">&minus;&#8377;2,400</div>
+      </div>
+      <div class="ded-item" id="di2" style="border-left-color:#AF52DE;">
+        <div class="ded-icon" style="background:rgba(175,82,222,0.1);">&#127963;</div>
+        <div class="ded-text">
+          <div class="ded-name">Professional Tax</div>
+          <div class="ded-desc">State government levy</div>
+        </div>
+        <div class="ded-amt">&minus;&#8377;200</div>
+      </div>
+      <div class="ded-item" id="di3" style="border-left-color:#30D158;">
+        <div class="ded-icon" style="background:rgba(48,209,88,0.1);">&#127973;</div>
+        <div class="ded-text">
+          <div class="ded-name">Health Insurance</div>
+          <div class="ded-desc">Jo tumne choose nahi kiya</div>
+        </div>
+        <div class="ded-amt">&minus;&#8377;1,200</div>
+      </div>
+      <div class="ded-item" id="di4" style="border-left-color:#FF3B30;">
+        <div class="ded-icon" style="background:rgba(255,59,48,0.1);">&#128203;</div>
+        <div class="ded-text">
+          <div class="ded-name">TDS</div>
+          <div class="ded-desc">Advance tax &mdash; pehle hi kat jaata</div>
+        </div>
+        <div class="ded-amt">&minus;&#8377;4,200</div>
+      </div>
+      <div class="ded-total" id="dtot">
+        <div class="ded-tlabel">TOTAL GAYA</div>
+        <div class="ded-tamt">&minus;&#8377;8,000</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 5: NOBODY TOLD YOU -->
+
+  <div class="scene" id="s5">
+    <div class="ambient"></div>
+    <div class="safe">
+      <div class="paper-icon" id="pi">&#128196;</div>
+      <div class="nb-heading" id="nbh">Kisi ne<br>explain <span>nahi kiya.</span></div>
+      <div class="nb-sub" id="nbs">Yeh paisa silently kat jaata hai, hamesha.</div>
+      <div class="struck-list" id="sl">
+        <div class="struck-pill" id="sp1">HR</div>
+        <div class="struck-pill" id="sp2">School</div>
+        <div class="struck-pill" id="sp3">College</div>
+        <div class="struck-pill" id="sp4">Koi bhi nahi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 6: CTA -->
+
+  <div class="scene" id="s6">
+    <div class="ambient"></div>
+    <div class="safe">
+      <div class="cta-icon" id="cti">&#128241;</div>
+      <div class="cta-headline" id="cth">Apni salary slip<br><span>aaj kholo. &#128196;</span></div>
+      <div class="gold-divider" id="gdiv"></div>
+      <div class="cta-card" id="ctcard">
+        <div class="cta-line" id="cl1">Jo samajh nahi aata &mdash;</div>
+        <div class="cta-line" id="cl2"><strong>woh tum control nahi kar sakte.</strong></div>
+        <div class="cta-line gap" id="cl3">Aur jo control nahi &mdash;</div>
+        <div class="cta-line" id="cl4"><strong>woh tumhara paisa nahi hai.</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const t = ms => new Promise(r => setTimeout(r, ms));
+const show = id => { const e=$(id); if(e) e.classList.add('show'); };
+const addCls = (id,cls) => { const e=$(id); if(e) e.classList.add(cls); };
+
+/* ── GOLD PARTICLES ── */
+const canvas = $('particleCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 390;
+canvas.height = 693;
+const PCOLS = ['rgba(255,215,0,','rgba(255,165,0,','rgba(255,255,255,'];
+class P {
+  constructor(){this.reset();}
+  reset(){
+    this.x = Math.random()*390;
+    this.y = Math.random()*693;
+    this.r = Math.random()*1.4+0.25;
+    this.vx = (Math.random()-0.5)*0.28;
+    this.vy = -(Math.random()*0.48+0.08);
+    this.a = Math.random()*0.32+0.04;
+    this.c = PCOLS[Math.floor(Math.random()*3)];
+    this.life = 1;
+    this.dec = Math.random()*0.0028+0.0008;
+  }
+  step(){
+    this.x += this.vx; this.y += this.vy;
+    this.life -= this.dec;
+    if(this.life<=0 || this.y<-8) this.reset();
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle = this.c+(this.a*this.life)+')';
+    ctx.fill();
+  }
+}
+const parts = Array.from({length:60}, ()=>new P());
+(function loop(){
+  ctx.clearRect(0,0,390,693);
+  parts.forEach(p=>{p.step();p.draw();});
+  requestAnimationFrame(loop);
+})();
+
+/* ── SCENE CONFIG ── */
+const SCENES = ['s1','s2','s3','s4','s5','s6'];
+const DURS   = [4600, 4900, 4100, 5900, 4600, 7200];
+const RIDS   = [
+  'g1','sc','sstamp','sf1','sf2','sf3','sf4','ctcb',
+  'ihb','iha','ihs','hs',
+  'bq','wt1','wt2','wt3','wt4',
+  'dh','di1','di2','di3','di4','dtot',
+  'pi','nbh','nbs','sl','sp1','sp2','sp3','sp4',
+  'cti','cth','gdiv','ctcard','cl1','cl2','cl3','cl4'
+];
+
+const fns = {
+  s1: async()=>{
+    addCls('g1','show');
+    await t(180); show('sc');
+    await t(620); addCls('sstamp','show');
+    await t(400); show('sf1');
+    await t(300); show('sf2');
+    await t(300); show('sf3');
+    await t(300); show('sf4');
+    await t(520); show('ctcb');
+  },
+  s2: async()=>{
+    await t(180); show('ihb');
+    await t(460); show('iha');
+    await t(420); show('ihs');
+    await t(360); show('hs');
+  },
+  s3: async()=>{
+    await t(180); show('bq');
+    await t(720); show('wt1');
+    await t(280); show('wt2');
+    await t(280); show('wt3');
+    await t(720); show('wt4');
+  },
+  s4: async()=>{
+    await t(140); show('dh');
+    await t(380); show('di1');
+    await t(430); show('di2');
+    await t(430); show('di3');
+    await t(430); show('di4');
+    await t(720); show('dtot');
+  },
+  s5: async()=>{
+    await t(140); show('pi');
+    await t(420); addCls('pi','float');
+    await t(300); show('nbh');
+    await t(440); show('nbs');
+    await t(520); show('sl');
+    await t(420); addCls('sp1','struck');
+    await t(240); addCls('sp2','struck');
+    await t(240); addCls('sp3','struck');
+    await t(240); addCls('sp4','struck');
+  },
+  s6: async()=>{
+    await t(140); show('cti');
+    await t(560); show('cth');
+    await t(460); addCls('gdiv','on');
+    await t(720); show('ctcard');
+    await t(340); show('cl1');
+    await t(320); show('cl2');
+    await t(560); show('cl3');
+    await t(320); show('cl4');
+  }
+};
+
+function flash(){
+  const f=$('flash');
+  f.classList.add('go');
+  setTimeout(()=>f.classList.remove('go'),130);
+}
+function resetAll(){
+  RIDS.forEach(id=>{
+    const e=$(id);
+    if(e) e.classList.remove('show','on','float','struck');
+  });
+}
+
+let cur=0, auto=null;
+function play(n){
+  clearTimeout(auto);
+  flash();
+  setTimeout(()=>{
+    document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+    resetAll();
+    $(SCENES[n]).classList.add('active');
+    fns[SCENES[n]]();
+    auto = setTimeout(()=>{
+      cur = (cur+1) % SCENES.length;
+      play(cur);
+    }, DURS[n]);
+  }, 80);
+}
+
+$('stage').addEventListener('click',()=>{
+  cur = (cur+1) % SCENES.length;
+  play(cur);
+});
+
+play(0);
+</script>
+
 </body>
 </html>
-
 
